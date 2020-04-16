@@ -3,12 +3,6 @@ provider "azurerm" {
   features {}
 }
 
-provider "azuread" {
-  version = "~>0.8"
-}
-
-data "azurerm_subscription" "current" {}
-
 data "azurerm_log_analytics_workspace" "aks" {
   name                = var.la_workspace_name
   resource_group_name = var.la_workspace_rg

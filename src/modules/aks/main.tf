@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "~>2.6"
+  version = "~>2.7"
   features {}
 }
 
@@ -217,7 +217,7 @@ resource "null_resource" "helmrelease_crds_creator" {
     command = <<EOT
       kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
       sleep 30
-    
+
     EOT
 
   }

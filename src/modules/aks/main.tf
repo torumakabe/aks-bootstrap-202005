@@ -229,6 +229,7 @@ resource "helm_release" "flux" {
   namespace  = "flux"
   repository = data.helm_repository.fluxcd.metadata[0].name
   chart      = "flux"
+  version    = "1.3.0"
 
   set {
     name  = "helm.versions"
@@ -253,6 +254,7 @@ resource "helm_release" "helm-operator" {
   namespace  = "flux"
   repository = data.helm_repository.fluxcd.metadata[0].name
   chart      = "helm-operator"
+  version    = "1.0.1"
 
   set {
     name  = "helm.versions"

@@ -53,8 +53,19 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   provisioner "local-exec" {
     command = <<EOT
-      az aks get-credentials -g ${var.aks_cluster_rg} -n ${self.name} --admin --overwrite-existing;
+      az aks get-credentials -g ${var.aks_cluster_rg} -n ${self.name} --admin --overwrite-existing
     EOT
+  }
+}
+
+resource "null_resource" "azure_monitor_aks_metrics_enabler" {
+  depends_on = [azurerm_kubernetes_cluster.aks]
+  provisioner "local-exec" {
+    command = <<EOT
+      MSI_ID=$(az aks show -g ${var.aks_cluster_rg} -n ${azurerm_kubernetes_cluster.aks.name} --query addonProfiles.omsagent.identity.clientId -o tsv)
+      az role assignment create --assignee $MSI_ID --scope ${azurerm_kubernetes_cluster.aks.id} --role "Monitoring Metrics Publisher"
+    EOT
+
   }
 }
 

@@ -171,7 +171,7 @@ resource "kubernetes_cluster_role_binding" "log_reader" {
 }
 
 provider "helm" {
-  version = "~>1.1"
+  version = "~>1.2"
 
   kubernetes {
     host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
@@ -191,16 +191,6 @@ resource "kubernetes_storage_class" "managed-premium-bind-wait" {
     storageaccounttype = "Premium_LRS"
     kind               = "Managed"
   }
-}
-
-data "helm_repository" "stable" {
-  name = "stable"
-  url  = "https://kubernetes-charts.storage.googleapis.com/"
-}
-
-data "helm_repository" "fluxcd" {
-  name = "fluxcd"
-  url  = "https://charts.fluxcd.io/"
 }
 
 resource "kubernetes_namespace" "flux" {
@@ -238,7 +228,7 @@ resource "helm_release" "flux" {
   depends_on = [null_resource.helmrelease_crds_creator]
   name       = "flux"
   namespace  = "flux"
-  repository = data.helm_repository.fluxcd.metadata[0].name
+  repository = "https://charts.fluxcd.io/"
   chart      = "flux"
   version    = "1.3.0"
 
@@ -263,7 +253,7 @@ resource "helm_release" "helm-operator" {
   depends_on = [null_resource.helmrelease_crds_creator]
   name       = "helm-operator"
   namespace  = "flux"
-  repository = data.helm_repository.fluxcd.metadata[0].name
+  repository = "https://charts.fluxcd.io/"
   chart      = "helm-operator"
   version    = "1.0.1"
 

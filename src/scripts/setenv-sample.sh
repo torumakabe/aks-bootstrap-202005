@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# ローカル実行用。このまま公開リポジトリにpushしちゃダメ！（setenv.shを.gitignoreに入れてあるので、リネームすればgitの対象から外れます）
+
 export GITHUB_ACTOR=""
 export TF_VAR_aks_cluster_name="${GITHUB_ACTOR}-awesome-cluster"
 export TF_VAR_aks_cluster_rg="rg-aks-awesome-cluster"

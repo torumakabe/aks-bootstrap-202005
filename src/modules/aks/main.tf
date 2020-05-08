@@ -50,6 +50,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
       log_analytics_workspace_id = data.azurerm_log_analytics_workspace.aks.id
     }
   }
+
 }
 
 resource "azurerm_monitor_diagnostic_setting" "aks" {
@@ -113,6 +114,18 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
   }
 }
 
+resource "kubernetes_storage_class" "managed-premium-bind-wait" {
+  metadata {
+    name = "managed-premium-bind-wait"
+  }
+  storage_provisioner = "kubernetes.io/azure-disk"
+  volume_binding_mode = "WaitForFirstConsumer"
+  parameters = {
+    storageaccounttype = "Premium_LRS"
+    kind               = "Managed"
+  }
+}
+
 provider "kubernetes" {
   version = "~>1.11"
 
@@ -153,14 +166,75 @@ resource "kubernetes_cluster_role_binding" "log_reader" {
   }
 }
 
-resource "kubernetes_storage_class" "managed-premium-bind-wait" {
+provider "helm" {
+  version = "~>1.2"
+
+  kubernetes {
+    host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
+  }
+}
+
+resource "kubernetes_namespace" "flux" {
   metadata {
-    name = "managed-premium-bind-wait"
+    name = "flux"
   }
-  storage_provisioner = "kubernetes.io/azure-disk"
-  volume_binding_mode = "WaitForFirstConsumer"
-  parameters = {
-    storageaccounttype = "Premium_LRS"
-    kind               = "Managed"
+}
+
+resource "kubernetes_secret" "flux-git-auth" {
+  metadata {
+    name      = "flux-git-auth"
+    namespace = "flux"
   }
+
+  data = {
+    GIT_AUTHUSER = var.git_authuser
+    GIT_AUTHKEY  = var.git_authkey
+  }
+
+}
+
+resource "helm_release" "flux" {
+  name       = "flux"
+  namespace  = "flux"
+  repository = "https://charts.fluxcd.io/"
+  chart      = "flux"
+  version    = "1.3.0"
+
+  set {
+    name  = "helm.versions"
+    value = "v3"
+  }
+
+  set {
+    name  = "git.url"
+    value = "https://${var.git_authuser}:${var.git_authkey}@github.com/${var.git_authuser}/${var.git_fluxrepo}"
+  }
+
+  set {
+    name  = "env.secretName"
+    value = "flux-git-auth"
+  }
+
+}
+
+resource "helm_release" "helm-operator" {
+  name       = "helm-operator"
+  namespace  = "flux"
+  repository = "https://charts.fluxcd.io/"
+  chart      = "helm-operator"
+  version    = "1.0.2"
+
+  set {
+    name  = "helm.versions"
+    value = "v3"
+  }
+
+  set {
+    name  = "git.ssh.secretName"
+    value = "flux-git-deploy"
+  }
+
 }

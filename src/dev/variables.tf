@@ -1,24 +1,20 @@
-variable "aks_host" {
-  type = string
-}
-
-variable "aks_client_certificate" {
-  type = string
-}
-
-variable "aks_client_key" {
-  type = string
-}
-
-variable "aks_cluster_ca_certificate" {
-  type = string
-}
-
 variable "aks_cluster_name" {
   type = string
 }
 
 variable "aks_cluster_rg" {
+  type = string
+}
+
+variable "aks_cluster_location" {
+  type = string
+}
+
+variable "la_workspace_name" {
+  type = string
+}
+
+variable "la_workspace_rg" {
   type = string
 }
 

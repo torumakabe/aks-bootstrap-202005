@@ -21,3 +21,15 @@ variable "la_workspace_name" {
 variable "la_workspace_rg" {
   type = string
 }
+
+variable "git_authuser" {
+  type = string
+}
+
+variable "git_authkey" {
+  type = string
+}
+
+variable "git_fluxrepo" {
+  type = string
+}

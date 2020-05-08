@@ -173,12 +173,14 @@ provider "helm" {
 }
 
 resource "kubernetes_namespace" "flux" {
+  count = var.enable_flux ? 1 : 0
   metadata {
     name = "flux"
   }
 }
 
 resource "kubernetes_secret" "flux-git-auth" {
+  count = var.enable_flux ? 1 : 0
   metadata {
     name      = "flux-git-auth"
     namespace = "flux"
@@ -192,6 +194,7 @@ resource "kubernetes_secret" "flux-git-auth" {
 }
 
 resource "helm_release" "flux" {
+  count      = var.enable_flux ? 1 : 0
   name       = "flux"
   namespace  = "flux"
   repository = "https://charts.fluxcd.io/"
@@ -216,6 +219,7 @@ resource "helm_release" "flux" {
 }
 
 resource "helm_release" "helm-operator" {
+  count      = var.enable_flux ? 1 : 0
   name       = "helm-operator"
   namespace  = "flux"
   repository = "https://charts.fluxcd.io/"

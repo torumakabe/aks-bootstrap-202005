@@ -18,6 +18,11 @@ variable "la_workspace_rg" {
   type = string
 }
 
+variable "enable_flux" {
+  type    = bool
+  default = false
+}
+
 variable "git_authuser" {
   type = string
 }

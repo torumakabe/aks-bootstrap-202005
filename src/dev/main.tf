@@ -26,6 +26,7 @@ module "aks" {
   aks_subnet_id        = module.network.aks_subnet_id
   la_workspace_name    = var.la_workspace_name
   la_workspace_rg      = var.la_workspace_rg
+  enable_flux          = var.enable_flux
   git_authuser         = var.git_authuser
   git_authkey          = var.git_authkey
   git_fluxrepo         = var.git_fluxrepo

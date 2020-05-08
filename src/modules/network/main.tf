@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "~>2.6"
-  features {}
-}
-
 resource "azurerm_virtual_network" "vnet_default" {
   name                = "vnet-default"
   resource_group_name = var.aks_cluster_rg

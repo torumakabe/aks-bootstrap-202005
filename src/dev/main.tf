@@ -1,3 +1,8 @@
+provider "azurerm" {
+  version = "~>2.9"
+  features {}
+}
+
 module "rg" {
   source = "../modules/rg"
 

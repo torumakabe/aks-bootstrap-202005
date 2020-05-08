@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "~>2.9"
-  features {}
-}
-
 data "azurerm_log_analytics_workspace" "aks" {
   name                = var.la_workspace_name
   resource_group_name = var.la_workspace_rg

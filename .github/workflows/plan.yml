@@ -31,14 +31,26 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: "Terraform Init"
+      - name: "Terraform Init(AKS)"
         run: terraform init
-        working-directory: ./src/dev
+        working-directory: ./src/dev-aks
 
-      - name: "Terraform Format"
+      - name: "Terraform Format(AKS)"
         run: terraform fmt -check
-        working-directory: ./src/dev
+        working-directory: ./src/dev-aks
 
-      - name: "Terraform Plan"
+      - name: "Terraform Plan(AKS)"
         run: terraform plan
-        working-directory: ./src/dev
+        working-directory: ./src/dev-aks
+
+      - name: "Terraform Init(Flux)"
+        run: terraform init
+        working-directory: ./src/dev-flux
+
+      - name: "Terraform Format(Flux)"
+        run: terraform fmt -check
+        working-directory: ./src/dev-flux
+
+      - name: "Terraform Plan(Flux)"
+        run: terraform plan
+        working-directory: ./src/dev-flux

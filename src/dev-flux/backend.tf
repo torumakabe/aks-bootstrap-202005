@@ -3,7 +3,7 @@ terraform {
     organization = "tomakabe"
 
     workspaces {
-      name = "aks-dev"
+      name = "dev-flux"
     }
   }
 }

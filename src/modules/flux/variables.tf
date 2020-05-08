@@ -6,18 +6,14 @@ variable "aks_cluster_rg" {
   type = string
 }
 
-variable "aks_cluster_location" {
+variable "git_authuser" {
   type = string
 }
 
-variable "aks_subnet_id" {
+variable "git_authkey" {
   type = string
 }
 
-variable "la_workspace_name" {
-  type = string
-}
-
-variable "la_workspace_rg" {
+variable "git_fluxrepo" {
   type = string
 }

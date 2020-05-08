@@ -9,18 +9,18 @@ jobs:
     name: "Terraform"
     runs-on: ubuntu-latest
     env:
-      TF_VAR_aks_cluster_name: ${ GITHUB_ACTOR }-awesome-cluster
+      TF_VAR_aks_cluster_name: ${GITHUB_ACTOR}-awesome-cluster
       TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster
       TF_VAR_aks_cluster_location: japaneast
       TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
       TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
-      TF_VAR_git_authuser: ${ GITHUB_ACTOR }
-      TF_VAR_git_authkey: ${{  secrets.GIT_AUTHKEY_FLUXREPO}}
+      TF_VAR_git_authuser: ${GITHUB_ACTOR}
+      TF_VAR_git_authkey: ${{  secrets.GIT_AUTHKEY_FLUXREPO }}
       TF_VAR_git_fluxrepo: flux-demo
-      ARM_SUBSCRIPTION_ID: ${{  secrets.ARM_SUBSCRIPTION_ID}}
-      ARM_CLIENT_ID: ${{  secrets.ARM_CLIENT_ID}}
-      ARM_CLIENT_SECRET: ${{  secrets.ARM_CLIENT_SECRET}}
-      ARM_TENANT_ID: ${{  secrets.ARM_TENANT_ID}}
+      ARM_SUBSCRIPTION_ID: ${{  secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{  secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{  secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{  secrets.ARM_TENANT_ID }}
 
     steps:
       - name: "Checkout"

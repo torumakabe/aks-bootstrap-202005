@@ -15,7 +15,7 @@ module "network" {
 module "aks" {
   source = "../modules/aks"
 
-  aks_cluster_name     = var.aks_cluster_name
+  aks_cluster_name     = lower(var.aks_cluster_name)
   aks_cluster_rg       = module.rg.aks_cluster_rg_out
   aks_cluster_location = var.aks_cluster_location
   aks_subnet_id        = module.network.aks_subnet_id

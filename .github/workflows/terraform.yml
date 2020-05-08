@@ -1,0 +1,44 @@
+name: "Terraform Plan"
+on: [push, pull_request]
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_aks_cluster_name: ${{ GITHUB_ACTOR }}-awesome-cluster
+      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster
+      TF_VAR_aks_cluster_location: japaneast
+      TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
+      TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
+      TF_VAR_git_authuser: ${{ GITHUB_ACTOR }}
+      TF_VAR_git_authkey: ${{  secrets.GIT_AUTHKEY_FLUXREPO}}
+      TF_VAR_git_fluxrepo: flux-demo
+      ARM_SUBSCRIPTION_ID: ${{  secrets.ARM_SUBSCRIPTION_ID}}
+      ARM_CLIENT_ID: ${{  secrets.ARM_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{  secrets.ARM_CLIENT_SECRET}}
+      ARM_TENANT_ID: ${{  secrets.ARM_TENANT_ID}}
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Terraform Setup"
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: "Terraform Init"
+        run: terraform init
+        working-directory: ./src/dev
+
+      - name: "Terraform Format"
+        run: terraform fmt -check
+        working-directory: ./src/dev
+
+      - name: "Terraform Plan"
+        run: terraform plan
+        working-directory: ./src/dev

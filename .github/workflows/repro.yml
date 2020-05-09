@@ -48,3 +48,20 @@ jobs:
       - name: "Terraform Plan"
         run: terraform plan -no-color
         working-directory: ./src/dev
+
+      - name: "Terraform Apply"
+        run: terraform apply -auto-approve
+        working-directory: ./src/dev
+
+      - name: "Azure Login"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "Azure CLI script file"
+        uses: azure/cli@v1.0.0
+        with:
+          azcliversion: 2.5.1
+          inlineScript: |
+            chmod +x ./src/scripts/enable-azure-monitor-aks-metrics.sh
+            ./src/scripts/enable-azure-monitor-aks-metrics.sh

@@ -42,5 +42,20 @@ jobs:
         working-directory: ./src/dev
 
       - name: "Terraform Plan"
-        run: terraform plan
+        run: terraform plan -no-color
         working-directory: ./src/dev
+
+      - name: "Create comment for PR"
+        uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          STDOUT: "```${{ steps.plan.outputs.stdout }}```"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: process.env.STDOUT
+            })

@@ -33,7 +33,6 @@ module "aks" {
   la_workspace_rg      = var.la_workspace_rg
   enable_flux          = var.enable_flux
   git_authuser         = var.git_authuser
-  git_authkey          = var.git_authkey
   git_fluxrepo         = var.git_fluxrepo
 
 }

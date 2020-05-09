@@ -21,7 +21,6 @@ jobs:
       TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
       TF_VAR_enable_flux: true
       TF_VAR_git_authuser: ${{ github.actor }}
-      TF_VAR_git_authkey: ${{  secrets.GIT_AUTHKEY_FLUXREPO }}
       TF_VAR_git_fluxrepo: flux-demo
       ARM_SUBSCRIPTION_ID: ${{  secrets.ARM_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID: ${{  secrets.ARM_CLIENT_ID }}

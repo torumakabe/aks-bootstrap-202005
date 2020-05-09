@@ -179,20 +179,6 @@ resource "kubernetes_namespace" "flux" {
   }
 }
 
-resource "kubernetes_secret" "flux-git-auth" {
-  count = var.enable_flux ? 1 : 0
-  metadata {
-    name      = "flux-git-auth"
-    namespace = "flux"
-  }
-
-  data = {
-    GIT_AUTHUSER = var.git_authuser
-    GIT_AUTHKEY  = var.git_authkey
-  }
-
-}
-
 resource "helm_release" "flux" {
   count      = var.enable_flux ? 1 : 0
   name       = "flux"
@@ -208,12 +194,7 @@ resource "helm_release" "flux" {
 
   set {
     name  = "git.url"
-    value = "https://${var.git_authuser}:${var.git_authkey}@github.com/${var.git_authuser}/${var.git_fluxrepo}"
-  }
-
-  set {
-    name  = "env.secretName"
-    value = "flux-git-auth"
+    value = "git@github.com:${var.git_authuser}/${var.git_fluxrepo}"
   }
 
 }

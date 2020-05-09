@@ -9,11 +9,12 @@ jobs:
     name: "Terraform"
     runs-on: ubuntu-latest
     env:
-      TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster
-      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster
+      TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster-dev
+      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster-dev
       TF_VAR_aks_cluster_location: japaneast
       TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
       TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
+      TF_VAR_enable_flux: true
       TF_VAR_git_authuser: ${{ github.actor }}
       TF_VAR_git_authkey: ${{  secrets.GIT_AUTHKEY_FLUXREPO }}
       TF_VAR_git_fluxrepo: flux-demo
@@ -33,7 +34,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: "Terraform Init"
-        run: terraform init
+        run: terraform init -backend-config=backend-dev.hcl
         working-directory: ./src/dev
 
       - name: "Terraform Format"

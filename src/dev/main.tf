@@ -1,3 +1,8 @@
+terraform {
+  required_version = "~> 0.12.24"
+  backend "remote" {}
+}
+
 provider "azurerm" {
   version = "~>2.9"
   features {}

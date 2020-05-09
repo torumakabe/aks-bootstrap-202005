@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
+        with:
+          ref: master
 
       - name: "Terraform Setup"
         uses: hashicorp/setup-terraform@v1
@@ -49,19 +51,27 @@ jobs:
         run: terraform plan -no-color
         working-directory: ./src/dev
 
-      - name: "Terraform Apply"
+      - if: github.event.action == 'labeled'
+        name: "Terraform Apply"
         run: terraform apply -auto-approve
         working-directory: ./src/dev
 
-      - name: "Azure Login"
+      - if: github.event.action == 'labeled'
+        name: "Azure Login"
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: "Azure CLI script file"
+      - if: github.event.action == 'labeled'
+        name: "Azure CLI script file"
         uses: azure/cli@v1.0.0
         with:
           azcliversion: 2.5.1
           inlineScript: |
             chmod +x ./src/scripts/enable-azure-monitor-aks-metrics.sh
             ./src/scripts/enable-azure-monitor-aks-metrics.sh
+
+      - if: github.event.action == 'unlabeled'
+        name: "Terraform Destroy"
+        run: terraform destroy -auto-approve
+        working-directory: ./src/dev

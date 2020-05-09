@@ -41,7 +41,8 @@ jobs:
         run: terraform fmt -check
         working-directory: ./src/dev
 
-      - name: "Terraform Plan"
+      - id: plan
+        name: "Terraform Plan"
         run: terraform plan -no-color
         working-directory: ./src/dev
 

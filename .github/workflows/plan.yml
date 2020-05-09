@@ -1,5 +1,5 @@
 name: "Terraform Plan"
-on: [push, pull_request]
+on: [pull_request]
 defaults:
   run:
     shell: bash
@@ -41,13 +41,13 @@ jobs:
         run: terraform fmt -check
         working-directory: ./src/dev
 
-      - name: "Terraform Plan"
+      - id: plan
+        name: "Terraform Plan"
         run: terraform plan -no-color
         working-directory: ./src/dev
 
       - name: "Create comment for PR"
         uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
         env:
           STDOUT: "```${{ steps.plan.outputs.stdout }}```"
         with:

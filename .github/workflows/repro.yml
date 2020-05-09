@@ -47,5 +47,5 @@ jobs:
         working-directory: ./src/dev
 
       - name: "Terraform Plan"
-        run: terraform plan
+        run: terraform plan -no-color
         working-directory: ./src/dev

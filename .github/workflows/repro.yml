@@ -56,19 +56,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./src/dev
 
-      - if: github.event.action == 'labeled'
-        name: "Azure Login"
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - if: github.event.action == 'labeled'
-        name: "Enable Azure Monitor AKS Metrics"
-        run: |
-          MSI_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query addonProfiles.omsagent.identity.clientId -o tsv)
-          AKS_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query id -o tsv)
-          az role assignment create --assignee $MSI_ID --scope $AKS_ID --role "Monitoring Metrics Publisher"
-
       - if: github.event.action == 'unlabeled'
         name: "Terraform Destroy"
         run: terraform destroy -auto-approve

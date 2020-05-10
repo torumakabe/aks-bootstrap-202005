@@ -63,14 +63,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - if: github.event.action == 'labeled'
-        name: "Azure CLI script file"
-        uses: azure/cli@v1.0.0
-        with:
-          azcliversion: 2.5.1
-          inlineScript: |
-            MSI_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query addonProfiles.omsagent.identity.clientId -o tsv)
-            AKS_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query id -o tsv)
-            az role assignment create --assignee $MSI_ID --scope $AKS_ID --role "Monitoring Metrics Publisher"
+        name: "Enable Azure Monitor AKS Metrics"
+        run: |
+          MSI_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query addonProfiles.omsagent.identity.clientId -o tsv)
+          AKS_ID=$(az aks show -g ${{ env.TF_VAR_aks_cluster_rg }} -n ${{ env.TF_VAR_aks_cluster_name }} --query id -o tsv)
+          az role assignment create --assignee $MSI_ID --scope $AKS_ID --role "Monitoring Metrics Publisher"
 
       - if: github.event.action == 'unlabeled'
         name: "Terraform Destroy"

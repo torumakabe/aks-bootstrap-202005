@@ -9,8 +9,8 @@ jobs:
     name: "Terraform"
     runs-on: ubuntu-latest
     env:
-      TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster-dev
-      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster-dev
+      TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster-ci
+      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster-ci
       TF_VAR_aks_cluster_location: japaneast
       TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
       TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
@@ -33,7 +33,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: "Terraform Init"
-        run: terraform init -backend-config=backend-dev.hcl
+        run: terraform init -backend-config=backend-ci.hcl
         working-directory: ./src/dev
 
       - name: "Terraform Format"

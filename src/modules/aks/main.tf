@@ -48,8 +48,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "aks_01" {
-  name                  = "pool1"
+resource "azurerm_kubernetes_cluster_node_pool" "pool01" {
+  name                  = "pool01"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   enable_auto_scaling   = true
   vnet_subnet_id        = var.aks_subnet_id
@@ -121,7 +121,7 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
   }
 }
 
-resource "kubernetes_storage_class" "managed-premium-bind-wait" {
+resource "kubernetes_storage_class" "managed_premium_bind_wait" {
   metadata {
     name = "managed-premium-bind-wait"
   }
@@ -212,7 +212,7 @@ resource "helm_release" "flux" {
 
 }
 
-resource "helm_release" "helm-operator" {
+resource "helm_release" "helm_operator" {
   count      = var.enable_flux ? 1 : 0
   name       = "helm-operator"
   namespace  = "flux"

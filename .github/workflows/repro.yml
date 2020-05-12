@@ -17,6 +17,8 @@ jobs:
       TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster-repro
       TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster-repro
       TF_VAR_aks_cluster_location: japaneast
+      TF_VAR_aks_cluster_systempool_name: default
+      TF_VAR_aks_cluster_userpool_name: pool01
       TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
       TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
       TF_VAR_enable_flux: true
@@ -60,3 +62,18 @@ jobs:
         name: "Terraform Destroy"
         run: terraform destroy -auto-approve
         working-directory: ./src/dev
+
+      - if: github.event.action == 'labeled'
+        name: "Azure Login"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - if: github.event.action == 'labeled'
+        name: "Update mode of AKS Nodepools"
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.5.1
+          inlineScript: |
+            az aks nodepool update -g ${{ env.TF_VAR_aks_cluster_rg }} --cluster-name ${{ env.TF_VAR_aks_cluster_name }} -n ${{ env.TF_VAR_aks_cluster_systempool_name}} --mode system
+            az aks nodepool update -g ${{ env.TF_VAR_aks_cluster_rg }} --cluster-name ${{ env.TF_VAR_aks_cluster_name }} -n ${{ env.TF_VAR_aks_cluster_userpool_name}} --mode user

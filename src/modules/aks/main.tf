@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.aks_cluster_name
 
   default_node_pool {
-    name               = "default"
+    name               = var.aks_cluster_systempool_name
     type               = "VirtualMachineScaleSets"
     vnet_subnet_id     = var.aks_subnet_id
     availability_zones = [1, 2, 3]
@@ -49,7 +49,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "pool01" {
-  name                  = "pool01"
+  name                  = var.aks_cluster_userpool_name
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   enable_auto_scaling   = true
   vnet_subnet_id        = var.aks_subnet_id

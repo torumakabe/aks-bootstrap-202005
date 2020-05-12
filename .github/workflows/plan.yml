@@ -1,4 +1,4 @@
-name: "Terraform Plan"
+name: "CI for PR"
 on: [pull_request]
 defaults:
   run:

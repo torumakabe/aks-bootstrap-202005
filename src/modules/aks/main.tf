@@ -11,15 +11,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.aks_cluster_name
 
   default_node_pool {
-    name                = "pool1"
-    type                = "VirtualMachineScaleSets"
-    enable_auto_scaling = true
-    vnet_subnet_id      = var.aks_subnet_id
-    availability_zones  = [1, 2, 3]
-    node_count          = 3
-    min_count           = 3
-    max_count           = 3
-    vm_size             = "Standard_D2s_v3"
+    name               = var.aks_cluster_systempool_name
+    type               = "VirtualMachineScaleSets"
+    vnet_subnet_id     = var.aks_subnet_id
+    availability_zones = [1, 2, 3]
+    node_count         = 2
+    vm_size            = "Standard_D2s_v3"
   }
 
   identity {
@@ -44,8 +41,23 @@ resource "azurerm_kubernetes_cluster" "aks" {
       enabled                    = true
       log_analytics_workspace_id = data.azurerm_log_analytics_workspace.aks.id
     }
+    azure_policy {
+      enabled = true
+    }
   }
 
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "pool01" {
+  name                  = var.aks_cluster_userpool_name
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  enable_auto_scaling   = true
+  vnet_subnet_id        = var.aks_subnet_id
+  availability_zones    = [1, 2, 3]
+  node_count            = 1
+  min_count             = 1
+  max_count             = 3
+  vm_size               = "Standard_D2s_v3"
 }
 
 resource "azurerm_monitor_diagnostic_setting" "aks" {
@@ -109,7 +121,7 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
   }
 }
 
-resource "kubernetes_storage_class" "managed-premium-bind-wait" {
+resource "kubernetes_storage_class" "managed_premium_bind_wait" {
   metadata {
     name = "managed-premium-bind-wait"
   }
@@ -200,7 +212,7 @@ resource "helm_release" "flux" {
 
 }
 
-resource "helm_release" "helm-operator" {
+resource "helm_release" "helm_operator" {
   count      = var.enable_flux ? 1 : 0
   name       = "helm-operator"
   namespace  = "flux"

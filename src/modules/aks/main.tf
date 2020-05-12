@@ -11,15 +11,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.aks_cluster_name
 
   default_node_pool {
-    name                = "pool1"
-    type                = "VirtualMachineScaleSets"
-    enable_auto_scaling = true
-    vnet_subnet_id      = var.aks_subnet_id
-    availability_zones  = [1, 2, 3]
-    node_count          = 3
-    min_count           = 3
-    max_count           = 3
-    vm_size             = "Standard_D2s_v3"
+    name               = "default"
+    type               = "VirtualMachineScaleSets"
+    vnet_subnet_id     = var.aks_subnet_id
+    availability_zones = [1, 2, 3]
+    node_count         = 2
+    vm_size            = "Standard_D2s_v3"
   }
 
   identity {
@@ -46,6 +43,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
 
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "aks_01" {
+  name                  = "pool1"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  enable_auto_scaling   = true
+  vnet_subnet_id        = var.aks_subnet_id
+  availability_zones    = [1, 2, 3]
+  node_count            = 1
+  min_count             = 1
+  max_count             = 3
+  vm_size               = "Standard_D2s_v3"
 }
 
 resource "azurerm_monitor_diagnostic_setting" "aks" {

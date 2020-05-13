@@ -29,7 +29,7 @@ jobs:
       - name: "Terraform Setup"
         uses: hashicorp/setup-terraform@v1
         with:
-          erraform_version: 0.12.24
+          erraform_version: 0.12.25
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: "Terraform Init"

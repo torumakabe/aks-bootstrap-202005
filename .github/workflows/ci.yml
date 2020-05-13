@@ -1,0 +1,60 @@
+name: "CI for PR"
+on: [pull_request]
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_aks_cluster_name: ${{ github.actor }}-awesome-cluster-ci
+      TF_VAR_aks_cluster_rg: rg-aks-awesome-cluster-ci
+      TF_VAR_aks_cluster_location: japaneast
+      TF_VAR_la_workspace_name: ${{ secrets.LA_WORKSPACE_NAME }}
+      TF_VAR_la_workspace_rg: ${{ secrets.LA_WORKSPACE_RG }}
+      TF_VAR_enable_flux: true
+      TF_VAR_git_authuser: ${{ github.actor }}
+      TF_VAR_git_fluxrepo: flux-demo
+      ARM_SUBSCRIPTION_ID: ${{  secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{  secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{  secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{  secrets.ARM_TENANT_ID }}
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Terraform Setup"
+        uses: hashicorp/setup-terraform@v1
+        with:
+          erraform_version: 0.12.24
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: "Terraform Init"
+        run: terraform init -backend-config=backend-ci.hcl
+        working-directory: ./src/dev
+
+      - name: "Terraform Format"
+        run: terraform fmt -check
+        working-directory: ./src/dev
+
+      - id: plan
+        name: "Terraform Plan"
+        run: terraform plan -no-color
+        working-directory: ./src/dev
+
+      - name: "Create comment for PR"
+        uses: actions/github-script@0.9.0
+        env:
+          STDOUT: "```${{ steps.plan.outputs.stdout }}```"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: process.env.STDOUT
+            })

@@ -33,3 +33,4 @@ override.tf.json
 terraform.rc
 
 setenv.sh
+setenv-dev-local.sh

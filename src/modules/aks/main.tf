@@ -16,7 +16,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vnet_subnet_id     = var.aks_subnet_id
     availability_zones = [1, 2, 3]
     node_count         = 2
-    vm_size            = "Standard_F2s_v2"
+    vm_size            = "Standard_D2s_v3"
   }
 
   identity {

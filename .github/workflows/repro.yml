@@ -89,7 +89,7 @@ jobs:
         name: "Patch nodeSelecter for system deployments & restart deployments"
         run: |
           ./scripts/update-nodeselecter-system-deployments.sh
-          ./scripts/update-nodeselecter-system-deployments.sh
+          ./scripts/restart-system-deployments.sh
 
       - if: github.event.action == 'unlabeled'
         name: "Update mode of AKS Nodepools for deletion"

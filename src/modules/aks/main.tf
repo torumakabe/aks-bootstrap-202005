@@ -122,6 +122,16 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
   }
 }
 
+provider "kubernetes" {
+  version = "~>1.11"
+
+  load_config_file       = false
+  host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
+}
+
 resource "kubernetes_storage_class" "managed_premium_bind_wait" {
   metadata {
     name = "managed-premium-bind-wait"
@@ -132,16 +142,6 @@ resource "kubernetes_storage_class" "managed_premium_bind_wait" {
     storageaccounttype = "Premium_LRS"
     kind               = "Managed"
   }
-}
-
-provider "kubernetes" {
-  version = "~>1.11"
-
-  load_config_file       = false
-  host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
-  client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
-  client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
-  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
 }
 
 resource "kubernetes_cluster_role" "log_reader" {

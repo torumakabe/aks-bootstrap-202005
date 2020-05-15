@@ -12,12 +12,7 @@ variable "aks_cluster_location" {
 
 variable "aks_cluster_systempool_name" {
   type    = string
-  default = "default"
-}
-
-variable "aks_cluster_userpool_name" {
-  type    = string
-  default = "pool01"
+  default = "system"
 }
 
 variable "la_workspace_name" {

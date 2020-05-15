@@ -52,12 +52,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "system" {
-  name                  = var.aks_cluster_systempool_name
+  name                  = "system"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vnet_subnet_id        = var.aks_subnet_id
   availability_zones    = [1, 2, 3]
   node_count            = 2
   vm_size               = "Standard_F2s_v2"
+  node_taints           = ["CriticalAddonsOnly=true:NoSchedule"]
 }
 
 resource "azurerm_monitor_diagnostic_setting" "aks" {

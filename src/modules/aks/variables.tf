@@ -10,11 +10,6 @@ variable "aks_cluster_location" {
   type = string
 }
 
-variable "aks_cluster_systempool_name" {
-  type = string
-}
-
-
 variable "aks_subnet_id" {
   type = string
 }

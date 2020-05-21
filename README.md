@@ -35,5 +35,5 @@
   * サンプルコードは以下に説明するsystem nodepoolの分離を行う意欲マシマシ版なので、時間がかかります
 * Terraformが現時点で未対応の機能は、Azure CLIとkubectlで補完します
   * たとえば[system nodepoolの指定](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/update-mode-aks-nodepools.sh)、Critical Addonたちへ[nodeSelectorの指定](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/update-nodeselecter-system-deployments.sh)と[マイグレーション](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/restart-system-deployments.sh)
-    * いずれAKSのAPIとHCLで吸収できる期待しています
+    * いずれAKSのAPIとHCLで吸収できると期待しています
   * 環境再現[ワークフロー](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/repro.yml)にその参考例を書いています

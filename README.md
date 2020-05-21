@@ -1,9 +1,10 @@
 # Azure Kubernetes Service Bootstraping サンプルコード (2020年春版)
 
 * 解説ブログも参考に
+* AKSとTerraform、Fluxの知識が前提です
 * プライベートリポジトリでの実行をおすすめします
   * センシティブな変数はGitHubで設定したシークレットを読み込むようにしていますが、terraform planの結果がプルリクのコメントに表示されますのでご注意を
-* 実行の起点は [/src/dev](https://github.com/ToruMakabe/aks-bootstrap-202005/tree/master/src/dev) です
+* Terraform実行の起点は [/src/dev](https://github.com/ToruMakabe/aks-bootstrap-202005/tree/master/src/dev) です
 * リソース量にご注意を
   * AKSのノードプールが2つ作られます。ノードVMのタイプと数は必要に応じて[調整してください](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/modules/aks/main.tf)
     * default: Standard_D2s_v3 * 2 (Autoscale to 5)
@@ -19,7 +20,7 @@
 
 * Terraformのvariableには環境変数から渡す方針です
   * ローカル実行では /src/scripts の下に置いた[スクリプト](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/setenv-dev-local-sample.sh)を参考に
-  * GitHubでのCIには[ci.yml](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/ci.yml)の[jobs.terraform.env](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/ci.yml#L11)を参考に
+  * GitHub ActionsでのCIには[ci.yml](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/ci.yml)の[jobs.terraform.env](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/ci.yml#L11)を参考に
 * Fluxを使う場合は参照先のリポジトリを指定してください
   * TF_VAR_enable_flux環境変数をtrueに
   * TF_VAR_git_authuserにレポジトリのユーザー名を (GitHub ActionsではGITHUB_ACTORを参照するようにしています)
@@ -27,12 +28,12 @@
   * Fluxの[サンプルレポジトリ](https://github.com/ToruMakabe/flux-demo)
   * ブートストラップ後にfluxctl identityコマンドでシークレットを取得し、Flux用レポジトリのdeploy keyに[設定](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access)してください
 * Azure Monitorのワークスペースは既にある前提で、variableに設定します
-  * terraform destroyの後にログが見たい、なんてこともあるので、ワークスペースは動的に作成削除しないようにします
+  * クラスター削除後にログが見たい、なんてこともあるので、ワークスペースは動的に作成削除しないようにします
 * masterブランチのコードで環境を再現する[仕組み](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/repro.yml)も置いておきます
-  * GitHubでIssueを作って"repro"というラベルを付けるとapplyが走ります
+  * GitHubでIssueを作って"repro"というラベルを付けるとterraform applyが走ります
   * ラベルを外すとdestroyが走ります
-  * サンプルコードは以下に説明するsystem nodepoolの分離を行っているマシマシ版なので、時間がかかります
+  * サンプルコードは以下に説明するsystem nodepoolの分離を行う意欲マシマシ版なので、時間がかかります
 * Terraformが現時点で未対応の機能は、Azure CLIとkubectlで補完します
-  * たとえば[system nodepoolの指定](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/update-mode-aks-nodepools.sh)と[Critical Addonのマイグレーション](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/restart-system-deployments.sh)
+  * たとえば[system nodepoolの指定](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/update-mode-aks-nodepools.sh)、Critical Addonたちへ[nodeSelectorの指定](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/update-nodeselecter-system-deployments.sh)と[マイグレーション](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/restart-system-deployments.sh)
     * いずれAKSのAPIとHCLで吸収されると期待しています
   * 環境再現[ワークフロー](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/repro.yml)にその参考例を書いています

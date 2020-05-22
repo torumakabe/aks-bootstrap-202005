@@ -29,6 +29,10 @@
   * ブートストラップ後にfluxctl identityコマンドでシークレットを取得し、Flux用レポジトリのdeploy keyに[設定](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access)してください
 * Azure Monitorのワークスペースは既にある前提で、variableに設定します
   * クラスター削除後にログが見たい、なんてこともあるので、ワークスペースは動的に作成削除しないようにします
+* AKS関連リソースが入るリソースグループ(MC_*)の外にあるリソースには、SystemAssigned指定で作られるManaged Identityから[操作する権限がない](https://docs.microsoft.com/ja-jp/azure/aks/use-managed-identity)ため、必要な場合はSystemAssignedではなくサービスプリンシパルを指定します
+  * もしくはSystemAssined指定で作成したManaged Identityに必要な権限を割り当てます
+  * 例: AKSを既存の別リソースグループにあるVNetに参加させる場合に、オートスケール時にサブネット操作するための権限割当が必要([参考スクリプト](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/src/scripts/assign_role_mi.sh))
+  * このサンプルもVNetは別途作成していますので、オートスケールを有効にする場合にはterraform apply後に上記スクリプトで権限を割り当てください
 * masterブランチのコードで環境を再現する[仕組み](https://github.com/ToruMakabe/aks-bootstrap-202005/blob/master/.github/workflows/repro.yml)も置いておきます
   * GitHubでIssueを作って"repro"というラベルを付けるとterraform applyが走ります
   * ラベルを外すとdestroyが走ります
